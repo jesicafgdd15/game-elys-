@@ -1,0 +1,491 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Pulau Ilmu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lilita+One&display=swap">
+<style>
+/* Layout: peta laut dengan pulau-pulau besar yang bisa diketuk; Perpustakaan Soal adalah daftar soal dan jawaban yang bisa disaring. */
+:root{
+  --sea:#d9eff1; --sea2:#c6e5e9; --card:#ffffff; --card2:#f0f9fa; --ink:#0c2d3a; --muted:#47646e;
+  --line:#b4d5db; --sun:#f5b50a; --sun-ink:#2b1f00; --pen:#0b6b8a; --pen-ink:#ffffff;
+  --good:#16794f; --good-bg:#dcf4e8; --bad:#c3283c; --bad-bg:#fde5e8;
+  --i1:#f2c14e; --i2:#7cc98f; --i3:#f29a8c; --i4:#b49be0; --i5:#74bdea; --i6:#f2a860; --isle-ink:#0c2d3a;
+  --display:"Lilita One","Trebuchet MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --sea:#092732; --sea2:#0d3542; --card:#0f3341; --card2:#154151; --ink:#e4f4f7; --muted:#9fc3cc;
+    --line:#1f5262; --pen:#62d2f2; --pen-ink:#06222b;
+    --good:#5fdba6; --good-bg:#123a2e; --bad:#ff8393; --bad-bg:#3d1a22; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --sea:#092732; --sea2:#0d3542; --card:#0f3341; --card2:#154151; --ink:#e4f4f7; --muted:#9fc3cc;
+  --line:#1f5262; --pen:#62d2f2; --pen-ink:#06222b;
+  --good:#5fdba6; --good-bg:#123a2e; --bad:#ff8393; --bad-bg:#3d1a22; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background-color:var(--sea);
+  background-image:radial-gradient(circle at 50% 100%, transparent 0 10px, var(--sea2) 10px 11.5px, transparent 11.5px);
+  background-size:30px 15px;
+  color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.5;
+  padding-block:20px 40px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap{max-width:720px; margin:0 auto; min-width:0}
+button,input,select{font:inherit; color:inherit}
+button{cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--pen); outline-offset:2px}
+h1,h2,h3{font-family:var(--display); font-weight:400; line-height:1.1; text-wrap:balance; margin:0}
+p{margin:0}
+
+.eyebrow{font-size:.8rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+h1{font-size:clamp(2.8rem, 12vw, 4.4rem); color:var(--pen); margin-top:4px; text-decoration:underline wavy var(--sun) 3px; text-underline-offset:10px; text-decoration-skip-ink:none}
+.lede{color:var(--muted); max-width:54ch; margin-top:16px}
+.mast{margin-bottom:18px}
+
+.tabs{display:flex; gap:6px; padding:5px; background:var(--card); border:2px solid var(--line); border-radius:14px; margin-bottom:18px}
+.tabs button{flex:1; min-height:44px; border:0; border-radius:10px; background:transparent; font-weight:700}
+.tabs button[aria-current="page"]{background:var(--pen); color:var(--pen-ink)}
+
+.lab{font-family:var(--body); font-size:.8rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:18px 0 8px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{min-height:42px; padding:6px 15px; border-radius:999px; border:2px solid var(--line); background:var(--card); font-weight:700; font-variant-numeric:tabular-nums}
+.chip .n{margin-left:6px; opacity:.75; font-weight:400}
+.chip[aria-pressed="true"]{background:var(--pen); border-color:var(--pen); color:var(--pen-ink)}
+.chip:hover{border-color:var(--pen)}
+
+.sum{background:var(--card); border:2px solid var(--line); border-radius:14px; padding:12px 16px; display:grid; gap:8px}
+.sum b{font-variant-numeric:tabular-nums}
+.meter{height:12px; border-radius:99px; background:var(--card2); border:1px solid var(--line); overflow:hidden}
+.meter i{display:block; height:100%; background:var(--sun); border-radius:99px}
+
+/* pulau */
+.isles{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:22px 14px; margin:8px 0 34px; padding-bottom:16px}
+@media (min-width:600px){ .isles{grid-template-columns:repeat(3, minmax(0,1fr))} }
+.isle{
+  position:relative; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:2px; text-align:left;
+  min-height:156px; padding:20px 20px 18px; border:0; color:var(--isle-ink); background:var(--ic);
+  border-radius:58% 42% 55% 45% / 48% 56% 44% 52%;
+  box-shadow:0 7px 0 rgba(0,0,0,.2), inset 0 -12px 0 rgba(255,255,255,.2);
+}
+.isle:nth-child(2){border-radius:44% 56% 42% 58% / 55% 45% 55% 45%}
+.isle:nth-child(3){border-radius:52% 48% 60% 40% / 42% 58% 42% 58%}
+.isle:nth-child(4){border-radius:46% 54% 48% 52% / 58% 44% 56% 42%}
+.isle:nth-child(5){border-radius:60% 40% 50% 50% / 46% 52% 48% 54%}
+.isle:nth-child(6){border-radius:42% 58% 56% 44% / 52% 48% 52% 48%}
+.isle:nth-child(even){transform:translateY(14px)}
+.isle:not(:disabled):hover{filter:brightness(1.06)}
+.isle:disabled{opacity:.5; cursor:not-allowed}
+.isle .pl{font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; opacity:.8}
+.isle .nm{font-family:var(--display); font-size:1.5rem; line-height:1.05}
+.isle .gm{font-size:.92rem; font-weight:700; font-variant-numeric:tabular-nums; margin-top:4px}
+.isle .bar{display:block; width:100%; height:7px; border-radius:99px; background:rgba(12,45,58,.22); overflow:hidden}
+.isle .bar i{display:block; height:100%; background:var(--isle-ink)}
+.isle .lh{margin-top:4px; font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; background:var(--sun); color:var(--sun-ink); border-radius:99px; padding:1px 10px}
+
+.go{margin-top:6px; width:100%; min-height:54px; border:0; border-radius:14px; background:var(--pen); color:var(--pen-ink); font-family:var(--display); font-size:1.35rem; box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.go:disabled{opacity:.45; cursor:not-allowed}
+.go:not(:disabled):hover{filter:brightness(1.08)}
+.sec{background:var(--card); color:var(--ink); border:2px solid var(--line); box-shadow:none}
+.ghost{min-height:44px; padding:8px 16px; border-radius:12px; border:2px dashed var(--pen); background:var(--card); color:var(--pen); font-weight:700}
+.ghost:disabled{opacity:.45; cursor:not-allowed; border-style:solid; border-color:var(--line); color:var(--muted)}
+.quit{border-color:var(--line); color:var(--muted)}
+
+/* main */
+.hud{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; font-weight:700; font-variant-numeric:tabular-nums}
+.hud .streak{color:var(--pen)}
+.timerrow{display:flex; align-items:center; gap:10px; margin:10px 0 14px}
+.timer{flex:1; height:12px; border-radius:99px; background:var(--card); border:1px solid var(--line); overflow:hidden}
+.timer i{display:block; height:100%; width:100%; background:var(--pen)}
+.timer i.low{background:var(--bad)}
+.tt{min-width:2.2ch; text-align:right; font-weight:700; font-variant-numeric:tabular-nums}
+.q{background:var(--card); border:2px solid var(--line); border-radius:16px; padding:18px}
+.tags{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+.tag{font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:2px 10px; border-radius:99px; background:var(--card2); border:1px solid var(--line); color:var(--muted)}
+.q h2{font-size:clamp(1.4rem, 5vw, 1.85rem)}
+.q h2:focus{outline:none}
+.opts{display:grid; gap:10px; margin-top:14px}
+.opt{display:flex; align-items:center; gap:12px; text-align:left; width:100%; min-height:56px; padding:10px 14px; border-radius:14px; border:2px solid var(--line); background:var(--card); font-weight:700}
+.opt .k{flex:none; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; background:var(--card2); border:1.5px solid var(--line); font-size:.85rem}
+.opt:not(:disabled):hover{border-color:var(--pen)}
+.opt.ok{border-color:var(--good); background:var(--good-bg)}
+.opt.ok .k{background:var(--good); color:var(--card); border-color:var(--good)}
+.opt.no{border-color:var(--bad); background:var(--bad-bg)}
+.opt.no .k{background:var(--bad); color:var(--card); border-color:var(--bad)}
+.opt.dim{opacity:.55}
+.opt.gone{opacity:.4; text-decoration:line-through}
+.opt:disabled{cursor:default}
+.tools{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:14px}
+.fb{margin-top:14px; border-radius:16px; padding:14px 16px; border:2px solid var(--line); background:var(--card)}
+.fb.ok{border-color:var(--good); background:var(--good-bg)}
+.fb.no{border-color:var(--bad); background:var(--bad-bg)}
+.fb h3{font-size:1.3rem; margin-bottom:4px}
+.fb .go{margin-top:12px; min-height:50px; font-size:1.15rem}
+
+/* hasil + perpustakaan */
+.res{background:var(--card); border:2px solid var(--line); border-radius:16px; padding:18px; display:grid; gap:12px}
+.big{font-family:var(--display); font-size:3.4rem; color:var(--pen); line-height:1; font-variant-numeric:tabular-nums}
+.big small{font-family:var(--body); font-size:1rem; color:var(--muted); font-weight:700; margin-left:6px}
+.stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px}
+.stat{background:var(--card2); border-radius:12px; padding:8px 12px}
+.stat span{display:block; font-size:.72rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+.stat b{font-size:1.25rem; font-variant-numeric:tabular-nums}
+.new{width:max-content; padding:2px 12px; border-radius:99px; background:var(--sun); color:var(--sun-ink); font-size:.78rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media (max-width:440px){.row2{grid-template-columns:1fr}}
+.row2 .go{margin-top:0}
+.fl{margin-top:22px; background:var(--card); border:2px solid var(--line); border-radius:16px; padding:14px 16px}
+.fl h2{font-size:1.5rem; margin-bottom:2px}
+.sub{color:var(--muted); font-size:.95rem; margin-bottom:10px}
+.ctl{display:grid; gap:12px; margin-bottom:12px}
+.fld{display:grid; gap:4px}
+.fld label,.fld .ln{font-size:.78rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+select,input[type="search"]{min-height:44px; padding:6px 12px; border-radius:12px; border:2px solid var(--line); background:var(--card2); color:var(--ink); width:100%; max-width:100%}
+.chk{display:flex; align-items:center; gap:10px; min-height:44px; font-weight:700}
+.chk input{width:22px; height:22px; accent-color:var(--pen)}
+.cnt{font-weight:700; color:var(--muted); font-size:.92rem; margin:6px 0}
+.rl{list-style:none; margin:10px 0 0; padding:0; display:grid; gap:10px}
+.ri{border:2px solid var(--line); border-left-width:7px; border-radius:12px; padding:12px 14px; background:var(--card2); min-width:0}
+.ri.benar{border-left-color:var(--good)} .ri.salah{border-left-color:var(--bad)} .ri.waktu{border-left-color:var(--muted)} .ri.belum{border-left-color:var(--line)}
+.rh{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:4px}
+.badge{font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:1px 10px; border-radius:99px; border:1.5px solid currentColor}
+.benar .badge{color:var(--good)} .salah .badge{color:var(--bad)} .waktu .badge,.belum .badge{color:var(--muted)}
+.meta{font-size:.82rem; color:var(--muted); font-weight:700}
+.rq{font-weight:700; overflow-wrap:anywhere}
+.ra{font-size:.95rem; overflow-wrap:anywhere}
+.re{font-size:.92rem; color:var(--muted); margin-top:6px}
+.ol{list-style:none; margin:8px 0 0; padding:0; display:grid; gap:6px}
+.ol li{display:flex; gap:10px; align-items:baseline; padding:6px 10px; border-radius:10px; border:1.5px solid var(--line); background:var(--card); overflow-wrap:anywhere}
+.ol li b{flex:none; font-size:.8rem; color:var(--muted)}
+.ol li.ok{border-color:var(--good); background:var(--good-bg)}
+.ol li .mk{margin-left:auto; flex:none; font-size:.72rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--good)}
+.tg{margin-top:8px; min-height:40px; padding:4px 14px; border-radius:10px; border:2px solid var(--pen); background:transparent; color:var(--pen); font-weight:700}
+.empty{padding:16px; text-align:center; color:var(--muted); border:2px dashed var(--line); border-radius:12px; list-style:none}
+.reset{margin-top:22px; min-height:44px; padding:6px 16px; border-radius:12px; border:2px solid var(--line); background:transparent; color:var(--muted); font-weight:700}
+.reset.sure{border-color:var(--bad); color:var(--bad)}
+@media (prefers-reduced-motion: no-preference){
+  .timer i{transition:width .2s linear}
+  .isle,.chip,.go,.opt{transition:filter .15s, border-color .15s, background-color .15s}
+}
+</style>
+
+<div class="wrap"><main id="app"></main></div>
+
+<script>
+(function(){
+"use strict";
+var Q=[
+ {c:"Matematika",l:1,q:"Berapa hasil 7 × 8?",o:["54","56","58","64"],a:1,e:"7 × 8 = 56. Hafalkan tabel perkalian 7 dengan cara 7, 14, 21, 28, 35, 42, 49, 56."},
+ {c:"Matematika",l:1,q:"Berapa hasil 144 ÷ 12?",o:["11","12","13","14"],a:1,e:"12 × 12 = 144, jadi 144 ÷ 12 = 12."},
+ {c:"Matematika",l:2,q:"Sebuah persegi panjang berukuran panjang 12 cm dan lebar 7 cm. Berapa luasnya?",o:["38 cm²","76 cm²","84 cm²","19 cm²"],a:2,e:"Luas = panjang × lebar = 12 × 7 = 84 cm². Angka 38 adalah keliling."},
+ {c:"Matematika",l:2,q:"Berapa 25% dari 360?",o:["80","90","100","120"],a:1,e:"25% sama dengan seperempat. 360 ÷ 4 = 90."},
+ {c:"Matematika",l:3,q:"Berapa KPK dari 12 dan 18?",o:["6","24","36","72"],a:2,e:"Kelipatan 12: 12, 24, 36. Kelipatan 18: 18, 36. Kelipatan persekutuan terkecil adalah 36."},
+ {c:"Matematika",l:3,q:"Berapa hasil (−8) × (−7) + 15?",o:["41","61","71","−41"],a:2,e:"Negatif dikali negatif menjadi positif: 56. Lalu 56 + 15 = 71."},
+
+ {c:"IPA",l:1,q:"Planet apa yang paling dekat dengan Matahari?",o:["Venus","Merkurius","Bumi","Mars"],a:1,e:"Merkurius adalah planet terdekat dengan Matahari dan sekaligus yang terkecil."},
+ {c:"IPA",l:1,q:"Gas apa yang kita hirup untuk bernapas?",o:["Karbon dioksida","Nitrogen","Oksigen","Hidrogen"],a:2,e:"Tubuh memakai oksigen untuk membakar makanan menjadi energi. Karbon dioksida kita hembuskan keluar."},
+ {c:"IPA",l:2,q:"Proses tumbuhan membuat makanan dengan bantuan cahaya matahari disebut…",o:["Respirasi","Transpirasi","Fotosintesis","Fermentasi"],a:2,e:"Fotosintesis mengubah air dan karbon dioksida menjadi glukosa dan oksigen di dalam kloroplas."},
+ {c:"IPA",l:2,q:"Organ tubuh yang berfungsi memompa darah ke seluruh tubuh adalah…",o:["Paru-paru","Jantung","Ginjal","Hati"],a:1,e:"Jantung memompa darah lewat pembuluh darah. Paru-paru mengurus pertukaran gas."},
+ {c:"IPA",l:3,q:"Apa rumus kimia air?",o:["CO₂","O₂","NaCl","H₂O"],a:3,e:"Satu molekul air terdiri dari dua atom hidrogen (H) dan satu atom oksigen (O)."},
+ {c:"IPA",l:3,q:"Dalam satuan SI, gaya diukur dengan satuan…",o:["Joule","Newton","Watt","Pascal"],a:1,e:"Satuan gaya adalah Newton (N). Joule untuk energi, Watt untuk daya, Pascal untuk tekanan."},
+
+ {c:"Bahasa Indonesia",l:1,q:"Apa lawan kata dari “rajin”?",o:["Tekun","Giat","Malas","Pandai"],a:2,e:"Rajin berarti sungguh-sungguh bekerja. Lawan katanya adalah malas."},
+ {c:"Bahasa Indonesia",l:1,q:"Apa persamaan kata (sinonim) dari “indah”?",o:["Buruk","Cantik","Kecil","Jelek"],a:1,e:"Indah dan cantik sama-sama berarti enak dipandang."},
+ {c:"Bahasa Indonesia",l:2,q:"Manakah penulisan kata baku yang benar?",o:["Apotik","Apotex","Apotek","Apoteck"],a:2,e:"Bentuk baku menurut KBBI adalah apotek."},
+ {c:"Bahasa Indonesia",l:2,q:"“Senyumnya bagaikan matahari pagi.” Kalimat ini memakai majas…",o:["Metafora","Hiperbola","Personifikasi","Simile"],a:3,e:"Simile membandingkan dua hal secara langsung memakai kata pembanding seperti bagaikan, seperti, atau laksana."},
+ {c:"Bahasa Indonesia",l:3,q:"Manakah bentuk baku yang benar?",o:["Analisa","Analisis","Analises","Analysis"],a:1,e:"KBBI menetapkan “analisis” sebagai bentuk baku."},
+ {c:"Bahasa Indonesia",l:3,q:"Kata dasar “sapu” diberi awalan me-. Hasilnya adalah…",o:["Mensapu","Memapu","Menyapu","Menapu"],a:2,e:"Awalan me- bertemu huruf s luluh menjadi meny-, sehingga sapu menjadi menyapu."},
+
+ {c:"IPS",l:1,q:"Apa ibu kota Provinsi Jawa Timur?",o:["Malang","Semarang","Surabaya","Bandung"],a:2,e:"Surabaya adalah ibu kota Jawa Timur dan dikenal sebagai Kota Pahlawan."},
+ {c:"IPS",l:1,q:"Apa lambang sila pertama Pancasila?",o:["Rantai","Bintang","Pohon beringin","Kepala banteng"],a:1,e:"Sila pertama, Ketuhanan Yang Maha Esa, berlambang bintang."},
+ {c:"IPS",l:2,q:"Proklamasi kemerdekaan Indonesia dibacakan pada tahun…",o:["1944","1945","1946","1949"],a:1,e:"Proklamasi dibacakan Soekarno dan Hatta pada 17 Agustus 1945."},
+ {c:"IPS",l:2,q:"Sungai terpanjang di Indonesia adalah Sungai…",o:["Mahakam","Musi","Barito","Kapuas"],a:3,e:"Sungai Kapuas di Kalimantan Barat panjangnya sekitar 1.143 km."},
+ {c:"IPS",l:3,q:"Konferensi Asia-Afrika tahun 1955 diselenggarakan di kota…",o:["Jakarta","Yogyakarta","Bandung","Surabaya"],a:2,e:"Konferensi berlangsung di Gedung Merdeka, Bandung, dan dihadiri 29 negara."},
+ {c:"IPS",l:3,q:"Organisasi Budi Utomo berdiri pada tahun…",o:["1905","1908","1912","1928"],a:1,e:"Budi Utomo berdiri 20 Mei 1908. Tanggal itu diperingati sebagai Hari Kebangkitan Nasional."},
+
+ {c:"Bahasa Inggris",l:1,q:"Apa arti kata “book” dalam bahasa Indonesia?",o:["Pensil","Meja","Buku","Kursi"],a:2,e:"Book berarti buku. Pencil adalah pensil, table adalah meja, chair adalah kursi."},
+ {c:"Bahasa Inggris",l:1,q:"Lengkapi kalimat: She ___ a student.",o:["am","is","are","be"],a:1,e:"Subjek she (orang ketiga tunggal) memakai to be “is”."},
+ {c:"Bahasa Inggris",l:2,q:"Apa bentuk lampau (past tense) dari “go”?",o:["Goed","Gone","Went","Going"],a:2,e:"Go adalah kata kerja tak beraturan: go, went, gone."},
+ {c:"Bahasa Inggris",l:2,q:"Apa bentuk jamak (plural) dari “child”?",o:["Childs","Children","Childes","Childrens"],a:1,e:"Child berubah tak beraturan menjadi children."},
+ {c:"Bahasa Inggris",l:3,q:"Lengkapi kalimat: If I ___ rich, I would travel the world.",o:["am","was","were","be"],a:2,e:"Pengandaian yang tidak nyata (conditional type 2) memakai “were” untuk semua subjek."},
+ {c:"Bahasa Inggris",l:3,q:"Apa lawan kata (antonim) dari “ancient”?",o:["Old","Antique","Historic","Modern"],a:3,e:"Ancient berarti sangat kuno. Lawannya adalah modern."},
+
+ {c:"Matematika",l:1,q:"Berapa hasil 15 + 27?",o:["32","41","42","52"],a:2,e:"5 + 7 = 12, tulis 2 simpan 1. Lalu 1 + 1 + 2 = 4. Hasilnya 42."},
+ {c:"Matematika",l:1,q:"Berapa hasil 9 × 6?",o:["45","54","56","63"],a:1,e:"9 × 6 = 54. Jumlah angka hasil kali 9 selalu 9: 5 + 4 = 9."},
+ {c:"Matematika",l:2,q:"Sebuah persegi memiliki sisi 9 cm. Berapa kelilingnya?",o:["18 cm","27 cm","36 cm","81 cm"],a:2,e:"Keliling persegi = 4 × sisi = 4 × 9 = 36 cm. Angka 81 adalah luasnya."},
+ {c:"Matematika",l:2,q:"Berapa hasil 3/4 + 1/4?",o:["4/8","1/2","3/16","1"],a:3,e:"Penyebutnya sama, jadi tinggal jumlahkan pembilang: 3 + 1 = 4, sehingga 4/4 = 1."},
+ {c:"Matematika",l:3,q:"Berapa FPB dari 24 dan 36?",o:["6","12","4","72"],a:1,e:"Faktor 24: 1, 2, 3, 4, 6, 8, 12, 24. Faktor 36: 1, 2, 3, 4, 6, 9, 12, 18, 36. Faktor persekutuan terbesar adalah 12."},
+ {c:"Matematika",l:3,q:"Berapa luas lingkaran berjari-jari 7 cm? (π = 22/7)",o:["44 cm²","49 cm²","154 cm²","22 cm²"],a:2,e:"Luas = π × r × r = 22/7 × 7 × 7 = 154 cm². Angka 44 adalah kelilingnya."},
+
+ {c:"IPA",l:1,q:"Hewan pemakan tumbuhan disebut…",o:["Karnivora","Herbivora","Omnivora","Insektivora"],a:1,e:"Herbivora hanya makan tumbuhan, contohnya sapi dan kambing. Karnivora makan daging."},
+ {c:"IPA",l:1,q:"Alat indera yang berfungsi untuk melihat adalah…",o:["Telinga","Hidung","Lidah","Mata"],a:3,e:"Mata menangkap cahaya dan mengirim gambar ke otak."},
+ {c:"IPA",l:2,q:"Perubahan wujud zat cair menjadi gas disebut…",o:["Membeku","Mencair","Menguap","Mengembun"],a:2,e:"Menguap adalah cair menjadi gas. Mengembun adalah kebalikannya, yaitu gas menjadi cair."},
+ {c:"IPA",l:2,q:"Bahan manakah yang menghantarkan listrik dengan baik (konduktor)?",o:["Karet","Plastik","Tembaga","Kayu kering"],a:2,e:"Tembaga adalah logam, sehingga elektron mudah mengalir. Karena itu kabel listrik berinti tembaga."},
+ {c:"IPA",l:3,q:"Peristiwa cuaca seperti hujan dan awan terjadi di lapisan atmosfer…",o:["Stratosfer","Troposfer","Mesosfer","Termosfer"],a:1,e:"Troposfer adalah lapisan paling bawah, tempat hampir semua fenomena cuaca terjadi."},
+ {c:"IPA",l:3,q:"Bagian darah yang bertugas mengangkut oksigen adalah…",o:["Sel darah putih","Keping darah","Plasma darah","Sel darah merah"],a:3,e:"Sel darah merah mengandung hemoglobin yang mengikat oksigen."},
+
+ {c:"Bahasa Indonesia",l:1,q:"Apa lawan kata dari “tinggi”?",o:["Panjang","Jauh","Rendah","Lebar"],a:2,e:"Tinggi berlawanan dengan rendah."},
+ {c:"Bahasa Indonesia",l:1,q:"“Ibu memasak nasi di dapur.” Manakah kata kerjanya?",o:["Ibu","Memasak","Nasi","Dapur"],a:1,e:"Kata kerja menyatakan perbuatan. Yang dilakukan ibu adalah memasak."},
+ {c:"Bahasa Indonesia",l:2,q:"Satu bait pantun terdiri dari berapa baris?",o:["2","3","4","6"],a:2,e:"Pantun terdiri dari empat baris: dua baris sampiran dan dua baris isi."},
+ {c:"Bahasa Indonesia",l:2,q:"Manakah penulisan kata baku yang benar?",o:["Silahkan","Silakan","Silakhan","Sillakan"],a:1,e:"Bentuk baku menurut KBBI adalah silakan, bukan silahkan."},
+ {c:"Bahasa Indonesia",l:3,q:"Ungkapan “panjang tangan” berarti…",o:["Suka menolong","Suka mencuri","Rajin bekerja","Bertubuh tinggi"],a:1,e:"Panjang tangan adalah ungkapan untuk orang yang suka mencuri."},
+ {c:"Bahasa Indonesia",l:3,q:"“Suaranya menggelegar membelah langit.” Kalimat ini memakai majas…",o:["Litotes","Ironi","Hiperbola","Eufemisme"],a:2,e:"Hiperbola melebih-lebihkan sesuatu. Suara manusia tentu tidak benar-benar membelah langit."},
+
+ {c:"IPS",l:1,q:"Apa mata uang negara Indonesia?",o:["Ringgit","Baht","Peso","Rupiah"],a:3,e:"Mata uang Indonesia adalah rupiah. Ringgit milik Malaysia dan baht milik Thailand."},
+ {c:"IPS",l:1,q:"Siapa presiden pertama Republik Indonesia?",o:["Soekarno","Soeharto","Mohammad Hatta","B.J. Habibie"],a:0,e:"Soekarno menjadi presiden pertama. Mohammad Hatta adalah wakil presiden pertama."},
+ {c:"IPS",l:2,q:"Sumpah Pemuda diikrarkan pada tahun…",o:["1908","1928","1945","1950"],a:1,e:"Sumpah Pemuda diikrarkan pada 28 Oktober 1928: satu tanah air, satu bangsa, satu bahasa."},
+ {c:"IPS",l:2,q:"Pertempuran 10 November 1945 di Surabaya diperingati setiap tahun sebagai…",o:["Hari Kartini","Hari Pahlawan","Hari Sumpah Pemuda","Hari Kebangkitan Nasional"],a:1,e:"Setiap 10 November kita memperingati Hari Pahlawan untuk mengenang perjuangan rakyat Surabaya."},
+ {c:"IPS",l:3,q:"Garis khatulistiwa (ekuator) tidak melewati pulau…",o:["Sumatra","Kalimantan","Sulawesi","Jawa"],a:3,e:"Khatulistiwa melintasi Sumatra, Kalimantan, dan Sulawesi. Pulau Jawa berada di selatan garis itu."},
+ {c:"IPS",l:3,q:"Candi Borobudur dibangun pada masa pemerintahan wangsa…",o:["Sanjaya","Majapahit","Syailendra","Sriwijaya"],a:2,e:"Borobudur dibangun oleh wangsa Syailendra sekitar abad ke-8 sampai ke-9."},
+
+ {c:"Bahasa Inggris",l:1,q:"Apa bahasa Inggris dari “kucing”?",o:["Dog","Cat","Cow","Rat"],a:1,e:"Kucing adalah cat. Dog adalah anjing, cow adalah sapi, rat adalah tikus."},
+ {c:"Bahasa Inggris",l:1,q:"Hari apa yang datang setelah Monday?",o:["Wednesday","Sunday","Tuesday","Friday"],a:2,e:"Urutannya: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday."},
+ {c:"Bahasa Inggris",l:2,q:"Lengkapi kalimat: They ___ playing football now.",o:["is","am","was","are"],a:3,e:"Subjek they memakai “are”. Kata now menunjukkan present continuous."},
+ {c:"Bahasa Inggris",l:2,q:"Apa lawan kata (antonim) dari “hot”?",o:["Cold","Warm","Wet","Dry"],a:0,e:"Hot (panas) berlawanan dengan cold (dingin)."},
+ {c:"Bahasa Inggris",l:3,q:"Lengkapi kalimat: I have ___ my homework.",o:["finish","finished","finishing","finishes"],a:1,e:"Present perfect memakai have atau has diikuti kata kerja bentuk ketiga (past participle): finished."},
+ {c:"Bahasa Inggris",l:3,q:"Lengkapi kalimat pasif: The letter ___ by Rina yesterday.",o:["was written","wrote","is written","has write"],a:0,e:"Kalimat pasif lampau memakai was atau were diikuti past participle: was written."},
+
+ {c:"Pengetahuan Umum",l:1,q:"Apa hewan darat terbesar di dunia?",o:["Jerapah","Badak","Gajah","Kuda nil"],a:2,e:"Gajah afrika adalah hewan darat terbesar, beratnya bisa mencapai sekitar enam ton."},
+ {c:"Pengetahuan Umum",l:1,q:"Warna apa yang terbentuk jika biru dan kuning dicampur?",o:["Ungu","Oranye","Cokelat","Hijau"],a:3,e:"Biru dan kuning menghasilkan hijau. Merah dan kuning menghasilkan oranye."},
+ {c:"Pengetahuan Umum",l:1,q:"Berapa jumlah benua di dunia?",o:["5","6","7","8"],a:2,e:"Ada tujuh benua: Asia, Afrika, Amerika Utara, Amerika Selatan, Antarktika, Eropa, dan Australia."},
+ {c:"Pengetahuan Umum",l:1,q:"Indonesia terletak di benua…",o:["Afrika","Eropa","Australia","Asia"],a:3,e:"Indonesia berada di Asia Tenggara, di antara Benua Asia dan Benua Australia."},
+ {c:"Pengetahuan Umum",l:2,q:"Apa ibu kota negara Jepang?",o:["Seoul","Tokyo","Beijing","Bangkok"],a:1,e:"Tokyo adalah ibu kota Jepang. Seoul milik Korea Selatan, Beijing milik Tiongkok, Bangkok milik Thailand."},
+ {c:"Pengetahuan Umum",l:2,q:"Samudra mana yang paling luas di dunia?",o:["Atlantik","Hindia","Arktik","Pasifik"],a:3,e:"Samudra Pasifik menutupi sekitar sepertiga permukaan Bumi."},
+ {c:"Pengetahuan Umum",l:2,q:"Mamalia apa yang bisa terbang?",o:["Kelelawar","Burung hantu","Elang","Camar"],a:0,e:"Kelelawar menyusui anaknya, jadi ia mamalia. Burung hantu, elang, dan camar adalah burung."},
+ {c:"Pengetahuan Umum",l:2,q:"Alat musik tradisional dari bambu yang berasal dari Jawa Barat adalah…",o:["Sasando","Angklung","Tifa","Kolintang"],a:1,e:"Angklung dari tanah Sunda dibunyikan dengan cara digoyangkan. UNESCO menetapkannya sebagai Warisan Budaya Takbenda pada 2010."},
+ {c:"Pengetahuan Umum",l:3,q:"Gunung apa yang tertinggi di dunia?",o:["K2","Kilimanjaro","Elbrus","Everest"],a:3,e:"Gunung Everest di perbatasan Nepal dan Tibet tingginya sekitar 8.849 meter di atas permukaan laut."},
+ {c:"Pengetahuan Umum",l:3,q:"Berapa jumlah tulang pada tubuh manusia dewasa?",o:["106","206","250","306"],a:1,e:"Bayi lahir dengan sekitar 300 tulang. Sebagian menyatu saat tumbuh sehingga orang dewasa memiliki 206."},
+ {c:"Pengetahuan Umum",l:3,q:"Logam apa yang berwujud cair pada suhu ruang?",o:["Besi","Aluminium","Raksa (merkuri)","Tembaga"],a:2,e:"Raksa membeku di sekitar −39 °C, jadi pada suhu ruang ia berupa cairan. Uapnya beracun."},
+ {c:"Pengetahuan Umum",l:3,q:"Siapa penemu yang paling terkenal karena mengembangkan lampu pijar komersial?",o:["Isaac Newton","Alexander Graham Bell","Thomas Edison","Albert Einstein"],a:2,e:"Thomas Edison mengembangkan lampu pijar yang tahan lama dan layak dipakai sehari-hari pada 1879. Alexander Graham Bell dikenal lewat telepon."}
+];
+var LV={1:"Mudah",2:"Sedang",3:"Sulit"}, BASE={1:10,2:15,3:20}, TIME=20, NQ=5, KEY="pulau-ilmu-progres", LET=["A","B","C","D"];
+var CATS=[]; Q.forEach(function(x){ if(CATS.indexOf(x.c)<0) CATS.push(x.c); });
+var app=document.getElementById("app");
+
+function load(){ try{ var s=localStorage.getItem(KEY); var o=s?JSON.parse(s):{}; return (o&&typeof o==="object")?o:{}; }catch(e){ return {}; } }
+var P=load();
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(P)); }catch(e){} }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function stat(q){ var r=P[q.q]; return r&&r.last?r.last:"belum"; }
+function isOk(q){ var r=P[q.q]; return !!(r&&r.ok); }
+function civ(c){ return "var(--i"+(CATS.indexOf(c)%6+1)+")"; }
+
+var S={lvl:0,cat:"*",list:[],i:0,score:0,streak:0,fifty:2,answers:[],opts:[],locked:false,used50:false,end:0,left:TIME,timer:null,gained:0,newRec:false};
+var R={st:"semua",l:0};
+var L={c:"semua",l:0,st:"semua",qs:"",show:false};
+var REV={}, sure=false;
+
+function chip(g,v,label,on,n){ return '<button type="button" class="chip" data-a="f" data-g="'+g+'" data-v="'+v+'" aria-pressed="'+on+'">'+label+(n===undefined?'':'<span class="n">'+n+'</span>')+'</button>'; }
+function setPressed(g,v){ Array.prototype.forEach.call(app.querySelectorAll('[data-g="'+g+'"]'),function(b){ b.setAttribute("aria-pressed",String(b.getAttribute("data-v")===String(v))); }); }
+function tabs(cur){
+  return '<nav class="tabs" aria-label="Menu utama"><button type="button" data-a="tab" data-v="peta"'+(cur==="peta"?' aria-current="page"':'')+'>Peta pulau</button><button type="button" data-a="tab" data-v="pustaka"'+(cur==="pustaka"?' aria-current="page"':'')+'>Perpustakaan soal</button></nav>';
+}
+var LVCH=[[0,"Semua"],[1,"Mudah"],[2,"Sedang"],[3,"Sulit"]];
+
+/* ---------- Peta ---------- */
+function gems(cat){
+  var p=Q.filter(function(q){ return (cat==="*"||q.c===cat)&&(S.lvl===0||q.l===S.lvl); });
+  return {t:p.length, g:p.filter(isOk).length};
+}
+function viewPeta(){
+  stopTimer();
+  app.innerHTML=
+   '<header class="mast"><p class="eyebrow">Kuis '+CATS.length+' pulau</p><h1>Pulau Ilmu</h1>'+
+   '<p class="lede">Layari tiap pulau, jawab soalnya, dan kumpulkan permata. Saat semua permata di satu pulau terkumpul, mercusuarnya menyala.</p></header>'+
+   tabs("peta")+
+   '<div class="sum" id="sum"></div>'+
+   '<h2 class="lab">Filter tingkat soal</h2><div class="chips">'+LVCH.map(function(p){ return chip("mlvl",p[0],p[1],S.lvl===p[0]); }).join("")+'</div>'+
+   '<h2 class="lab">Pilih pulau</h2><div class="isles" id="isl"></div>'+
+   '<button type="button" class="go" data-a="sail" data-v="*">Jelajah semua pulau</button>';
+  drawIslands(); window.scrollTo(0,0);
+}
+function drawIslands(){
+  var a=gems("*"), pc=a.t?Math.round(a.g/a.t*100):0;
+  document.getElementById("sum").innerHTML='<p>Permata terkumpul <b>'+a.g+' / '+a.t+'</b> ('+pc+'%)</p><div class="meter" role="progressbar" aria-label="Permata terkumpul" aria-valuemin="0" aria-valuemax="'+a.t+'" aria-valuenow="'+a.g+'"><i style="width:'+pc+'%"></i></div>';
+  document.getElementById("isl").innerHTML=CATS.map(function(c){
+    var x=gems(c), w=x.t?Math.round(x.g/x.t*100):0, done=x.t>0&&x.g===x.t;
+    return '<button type="button" class="isle" style="--ic:'+civ(c)+'" data-a="sail" data-v="'+esc(c)+'"'+(x.t?'':' disabled')+'>'+
+      '<span class="pl">Pulau</span><span class="nm">'+esc(c)+'</span><span class="gm">'+x.g+' / '+x.t+' permata</span>'+
+      '<span class="bar"><i style="width:'+w+'%"></i></span>'+(done?'<span class="lh">Mercusuar menyala</span>':'')+'</button>';
+  }).join("");
+}
+
+/* ---------- Pelayaran ---------- */
+function sail(cat){
+  var pool=Q.filter(function(q){ return (cat==="*"||q.c===cat)&&(S.lvl===0||q.l===S.lvl); });
+  if(!pool.length) return;
+  var g1=[],g2=[],g3=[];
+  pool.forEach(function(q){ var s=stat(q); (s==="belum"?g1:s==="salah"?g2:g3).push(q); });
+  S.list=shuffle(g1).concat(shuffle(g2),shuffle(g3)).slice(0,NQ);
+  S.cat=cat; S.i=0; S.score=0; S.streak=0; S.fifty=2; S.answers=[]; S.gained=0; R.st="semua"; R.l=0;
+  viewPlay();
+}
+function viewPlay(){
+  var q=S.list[S.i];
+  S.opts=shuffle(q.o.map(function(t,k){ return {t:t,ok:k===q.a,gone:false}; }));
+  S.locked=false; S.used50=false;
+  app.innerHTML=
+   '<div class="hud"><span>'+(S.cat==="*"?"Semua pulau":"Pulau "+esc(S.cat))+' · soal <b>'+(S.i+1)+'</b>/'+S.list.length+'</span><span class="streak" id="st"></span><span>Skor <b id="sc">'+S.score+'</b></span></div>'+
+   '<div class="timerrow"><div class="timer" role="progressbar" aria-label="Sisa waktu" aria-valuemin="0" aria-valuemax="'+TIME+'"><i id="tb"></i></div><span class="tt" id="tt">'+TIME+'</span></div>'+
+   '<article class="q"><div class="tags"><span class="tag">'+esc(q.c)+'</span><span class="tag">'+LV[q.l]+'</span></div><h2 id="qt" tabindex="-1">'+esc(q.q)+'</h2></article>'+
+   '<div class="opts" id="opts">'+S.opts.map(function(o,i){ return '<button type="button" class="opt" data-a="pick" data-v="'+i+'"><span class="k">'+LET[i]+'</span><span>'+esc(o.t)+'</span></button>'; }).join("")+'</div>'+
+   '<div class="tools"><button type="button" class="ghost" id="f50" data-a="fifty"></button><button type="button" class="ghost quit" data-a="quit">Kembali ke peta</button></div>'+
+   '<div class="fb" id="fb" role="status" hidden></div>';
+  upd50(); updStreak(); document.getElementById("qt").focus({preventScroll:true}); startTimer(); window.scrollTo(0,0);
+}
+function updStreak(){ var e=document.getElementById("st"); if(e) e.textContent=S.streak>=2?"Runtun "+S.streak:""; }
+function upd50(){ var b=document.getElementById("f50"); if(!b) return; b.textContent="Filter 50:50 (sisa "+S.fifty+")"; b.disabled=S.fifty<=0||S.locked||S.used50; }
+function useFifty(){
+  if(S.locked||S.used50||S.fifty<=0) return;
+  S.used50=true; S.fifty--;
+  var wrong=shuffle(S.opts.map(function(o,i){return i;}).filter(function(i){return !S.opts[i].ok;})).slice(0,2);
+  var btns=document.querySelectorAll("#opts .opt");
+  wrong.forEach(function(i){ S.opts[i].gone=true; btns[i].classList.add("gone"); btns[i].disabled=true; btns[i].setAttribute("aria-label",btns[i].textContent.slice(1)+" (disaring)"); });
+  upd50();
+}
+function startTimer(){ stopTimer(); S.end=Date.now()+TIME*1000; tick(); S.timer=setInterval(tick,200); }
+function stopTimer(){ if(S.timer){ clearInterval(S.timer); S.timer=null; } }
+function tick(){
+  S.left=Math.max(0,(S.end-Date.now())/1000);
+  var tb=document.getElementById("tb"), tt=document.getElementById("tt"); if(!tb||!tt) return;
+  tb.style.width=(S.left/TIME*100)+"%"; tb.classList.toggle("low",S.left<=5); tt.textContent=Math.ceil(S.left);
+  tb.parentNode.setAttribute("aria-valuenow",String(Math.ceil(S.left)));
+  if(S.left<=0) settle(-1);
+}
+function settle(i){
+  if(S.locked) return; S.locked=true; stopTimer();
+  var q=S.list[S.i], picked=i>=0?S.opts[i]:null, status=!picked?"waktu":(picked.ok?"benar":"salah"), pts=0;
+  if(status==="benar"){ S.streak++; pts=BASE[q.l]+Math.floor(S.left/5)+(S.streak>=3?5:0); S.score+=pts; } else S.streak=0;
+  var rec=P[q.q]; if(!rec){ rec={ok:false,last:""}; P[q.q]=rec; }
+  rec.last=status==="benar"?"benar":"salah";
+  if(status==="benar"&&!rec.ok){ rec.ok=true; S.gained++; }
+  save();
+  S.answers.push({q:q,status:status,picked:picked?picked.t:null,correct:q.o[q.a],pts:pts});
+  var btns=document.querySelectorAll("#opts .opt");
+  S.opts.forEach(function(o,k){ btns[k].disabled=true; if(o.ok) btns[k].classList.add("ok"); else if(k===i) btns[k].classList.add("no"); else if(!o.gone) btns[k].classList.add("dim"); });
+  document.getElementById("sc").textContent=S.score; updStreak(); upd50();
+  var last=S.i===S.list.length-1, fb=document.getElementById("fb");
+  var head=status==="benar"?"Benar! +"+pts+" poin":status==="salah"?"Belum tepat":"Waktu habis";
+  fb.className="fb "+(status==="benar"?"ok":status==="salah"?"no":"");
+  fb.innerHTML='<h3>'+head+'</h3>'+(status==="benar"?'':'<p>Jawaban yang benar: <b>'+esc(q.o[q.a])+'</b></p>')+'<p>'+esc(q.e)+'</p><button type="button" class="go" id="nx" data-a="next">'+(last?"Lihat hasil":"Soal berikutnya")+'</button>';
+  fb.hidden=false; document.getElementById("nx").focus();
+}
+
+/* ---------- Hasil ---------- */
+function viewResult(){
+  var tot=S.answers.length, ok=S.answers.filter(function(a){return a.status==="benar";}).length, acc=tot?Math.round(ok/tot*100):0;
+  var msg=acc>=80?"Pelayaran hebat. Permata baru masuk ke petamu.":acc>=50?"Lumayan. Soal yang salah akan muncul lagi di pelayaran berikutnya.":"Tenang, baca penjelasannya lalu layari pulau ini lagi.";
+  app.innerHTML=
+   '<header class="mast"><p class="eyebrow">'+(S.cat==="*"?"Semua pulau":"Pulau "+esc(S.cat))+'</p><h1>Mendarat</h1></header>'+
+   '<section class="res">'+(S.gained?'<span class="new">+'+S.gained+' permata baru</span>':'')+
+   '<div class="big">'+S.score+'<small>poin</small></div><p>'+msg+'</p>'+
+   '<div class="stats"><div class="stat"><span>Benar</span><b>'+ok+' / '+tot+'</b></div><div class="stat"><span>Akurasi</span><b>'+acc+'%</b></div><div class="stat"><span>Permata total</span><b>'+gems("*").g+' / '+gems("*").t+'</b></div></div>'+
+   '<div class="row2"><button type="button" class="go" data-a="again">Layar lagi</button><button type="button" class="go sec" data-a="map">Kembali ke peta</button></div></section>'+
+   '<section class="fl"><h2>Filter jawabanmu</h2><p class="sub">Saring jawaban pelayaran ini menurut status dan tingkat soal.</p>'+
+   '<div class="ctl"><div class="fld"><span class="ln">Status jawaban</span><div class="chips" id="rst">'+["semua","benar","salah","waktu"].map(function(k){ return chip("rst",k,{semua:"Semua",benar:"Benar",salah:"Salah",waktu:"Waktu habis"}[k],R.st===k,0); }).join("")+'</div></div>'+
+   '<div class="fld"><label for="rl">Tingkat soal</label><select id="rl">'+LVCH.map(function(p){ return '<option value="'+p[0]+'">'+(p[0]===0?"Semua tingkat":p[1])+'</option>'; }).join("")+'</select></div></div>'+
+   '<ul class="rl" id="rlist"></ul></section>';
+  drawReview(); window.scrollTo(0,0);
+}
+function drawReview(){
+  var inL=S.answers.filter(function(a){ return !R.l||a.q.l===R.l; });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-g="rst"]'),function(b){
+    var k=b.getAttribute("data-v"), n=inL.filter(function(a){ return k==="semua"||a.status===k; }).length;
+    b.querySelector(".n").textContent=n;
+  });
+  var items=inL.filter(function(a){ return R.st==="semua"||a.status===R.st; });
+  var nm={benar:"Benar",salah:"Salah",waktu:"Waktu habis"};
+  document.getElementById("rlist").innerHTML=items.length?items.map(function(a){
+    return '<li class="ri '+a.status+'"><div class="rh"><span class="badge">'+nm[a.status]+'</span><span class="meta">'+esc(a.q.c)+' · '+LV[a.q.l]+(a.pts?' · +'+a.pts+' poin':'')+'</span></div>'+
+      '<p class="rq">'+esc(a.q.q)+'</p>'+(a.status==="salah"?'<p class="ra">Jawabanmu: <b>'+esc(a.picked)+'</b></p>':'')+
+      '<p class="ra">'+(a.status==="benar"?'Jawabanmu':'Jawaban benar')+': <b>'+esc(a.correct)+'</b></p><p class="re">'+esc(a.q.e)+'</p></li>';
+  }).join(""):'<li class="empty">Tidak ada jawaban dengan filter ini.</li>';
+}
+
+/* ---------- Perpustakaan soal ---------- */
+function lm(q,skipSt){
+  if(L.c!=="semua"&&q.c!==L.c) return false;
+  if(L.l&&q.l!==L.l) return false;
+  if(!skipSt&&L.st!=="semua"&&stat(q)!==L.st) return false;
+  if(L.qs){ var h=(q.q+" "+q.o.join(" ")+" "+q.e).toLowerCase(); if(h.indexOf(L.qs.toLowerCase())<0) return false; }
+  return true;
+}
+function viewPustaka(){
+  stopTimer(); sure=false;
+  app.innerHTML=
+   '<header class="mast"><p class="eyebrow">'+Q.length+' soal dan jawaban</p><h1>Perpustakaan</h1>'+
+   '<p class="lede">Semua soal dan jawabannya ada di sini. Saring menurut pulau, tingkat, status, atau kata yang kamu cari.</p></header>'+
+   tabs("pustaka")+
+   '<div class="ctl">'+
+   '<div class="fld"><label for="qs">Cari kata</label><input type="search" id="qs" placeholder="Contoh: fotosintesis" value="'+esc(L.qs)+'" autocomplete="off"></div>'+
+   '<div class="fld"><label for="fc">Pulau</label><select id="fc"><option value="semua">Semua pulau</option>'+CATS.map(function(c){ return '<option value="'+esc(c)+'"'+(L.c===c?' selected':'')+'>'+esc(c)+'</option>'; }).join("")+'</select></div>'+
+   '<div class="fld"><span class="ln">Tingkat soal</span><div class="chips">'+LVCH.map(function(p){ return chip("llvl",p[0],p[1],L.l===p[0]); }).join("")+'</div></div>'+
+   '<div class="fld"><span class="ln">Status jawabanmu</span><div class="chips">'+[["semua","Semua"],["belum","Belum dijawab"],["benar","Benar"],["salah","Salah"]].map(function(p){ return chip("lst",p[0],p[1],L.st===p[0],0); }).join("")+'</div></div>'+
+   '<label class="chk" for="showall"><input type="checkbox" id="showall"'+(L.show?' checked':'')+'> Tampilkan semua jawaban</label></div>'+
+   '<p class="cnt" id="cnt" aria-live="polite"></p><ul class="rl" id="lib"></ul>'+
+   '<button type="button" class="reset" id="rs" data-a="reset">Mulai ulang progres permata</button>';
+  drawLib(); window.scrollTo(0,0);
+}
+function drawLib(){
+  var base=Q.filter(function(q){ return lm(q,true); });
+  Array.prototype.forEach.call(app.querySelectorAll('[data-g="lst"]'),function(b){
+    var k=b.getAttribute("data-v"); b.querySelector(".n").textContent=base.filter(function(q){ return k==="semua"||stat(q)===k; }).length;
+  });
+  var items=Q.filter(function(q){ return lm(q,false); });
+  document.getElementById("cnt").textContent="Menampilkan "+items.length+" dari "+Q.length+" soal";
+  var nm={benar:"Sudah benar",salah:"Perlu diulang",belum:"Belum dijawab"};
+  document.getElementById("lib").innerHTML=items.length?items.map(function(q){
+    var idx=Q.indexOf(q), s=stat(q), open=L.show||REV[idx];
+    return '<li class="ri '+s+'" data-i="'+idx+'"><div class="rh"><span class="badge">'+nm[s]+'</span><span class="meta">'+esc(q.c)+' · '+LV[q.l]+'</span></div>'+
+      '<p class="rq">'+esc(q.q)+'</p><ul class="ol">'+q.o.map(function(t,k){ var ok=open&&k===q.a; return '<li'+(ok?' class="ok"':'')+'><b>'+LET[k]+'</b><span>'+esc(t)+'</span>'+(ok?'<span class="mk">Jawaban benar</span>':'')+'</li>'; }).join("")+'</ul>'+
+      (open?'<p class="re">'+esc(q.e)+'</p>':'')+
+      (L.show?'':'<button type="button" class="tg" data-a="rev" data-v="'+idx+'">'+(open?"Sembunyikan jawaban":"Lihat jawaban")+'</button>')+'</li>';
+  }).join(""):'<li class="empty">Tidak ada soal dengan filter ini. Longgarkan filter atau ganti kata pencarian.</li>';
+  var rs=document.getElementById("rs"); if(rs){ rs.textContent=sure?"Yakin hapus progres? Klik sekali lagi":"Mulai ulang progres permata"; rs.className="reset"+(sure?" sure":""); }
+}
+
+/* ---------- Event ---------- */
+app.addEventListener("click",function(e){
+  var el=e.target.closest("[data-a]"); if(!el||el.disabled) return;
+  var a=el.getAttribute("data-a"), v=el.getAttribute("data-v");
+  if(a==="tab"){ if(v==="peta") viewPeta(); else viewPustaka(); }
+  else if(a==="sail") sail(v);
+  else if(a==="again") sail(S.cat);
+  else if(a==="map"||a==="quit") viewPeta();
+  else if(a==="pick") settle(parseInt(v,10));
+  else if(a==="fifty") useFifty();
+  else if(a==="next"){ if(S.i<S.list.length-1){ S.i++; viewPlay(); } else viewResult(); }
+  else if(a==="f"){
+    var g=el.getAttribute("data-g"); setPressed(g,v);
+    if(g==="mlvl"){ S.lvl=parseInt(v,10); drawIslands(); }
+    else if(g==="llvl"){ L.l=parseInt(v,10); drawLib(); }
+    else if(g==="lst"){ L.st=v; drawLib(); }
+    else if(g==="rst"){ R.st=v; drawReview(); }
+  }
+  else if(a==="rev"){
+    var i=parseInt(v,10); REV[i]=!REV[i]; drawLib();
+    var nb=app.querySelector('li[data-i="'+i+'"] .tg'); if(nb) nb.focus();
+  }
+  else if(a==="reset"){
+    if(sure){ P={}; save(); REV={}; sure=false; } else sure=true;
+    drawLib();
+  }
+});
+app.addEventListener("input",function(e){ if(e.target.id==="qs"){ L.qs=e.target.value.trim(); drawLib(); } });
+app.addEventListener("change",function(e){
+  var id=e.target.id;
+  if(id==="fc"){ L.c=e.target.value; drawLib(); }
+  else if(id==="showall"){ L.show=e.target.checked; drawLib(); }
+  else if(id==="rl"){ R.l=parseInt(e.target.value,10); drawReview(); }
+});
+viewPeta();
+})();
+</script>
+
+</body></html>
